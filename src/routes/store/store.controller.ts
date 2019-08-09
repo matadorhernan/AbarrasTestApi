@@ -1,23 +1,21 @@
-import { Controller, Get, Param, Res, Put, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Res, Param, Post, Body, Put } from '@nestjs/common';
 import { Response } from 'express';
+import { StoreService } from '../../services/store.service';
+import { Store } from '../../interfaces/store.interface';
 
-import * as _ from 'lodash';
-import { UserService } from '../../services/user.service';
-import { User } from '../../interfaces/user.interface';
-
-@Controller('user')
-export class UserController {
-  constructor(private userService: UserService) {}
+@Controller('store')
+export class StoreController {
+  constructor(private storeService: StoreService) {}
 
   @Get()
-  getUsers(@Res() res: Response) {
-    this.userService
+  getStores(@Res() res: Response) {
+    this.storeService
       .findAll()
       .then(document => {
         return res.json({
           code: 200,
           success: true,
-          message: 'Users Found',
+          message: 'Stores Found',
           document,
         });
       })
@@ -25,21 +23,21 @@ export class UserController {
         return res.status(500).json({
           code: 500,
           success: false,
-          message: 'Internal Server Error While Searching Users',
+          message: 'Internal Server Error While Searching Stores',
           error,
         });
       });
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string, @Res() res: Response) {
-    this.userService
+  getStore(@Param('id') id: string, @Res() res: Response) {
+    this.storeService
       .findById(id)
       .then(document => {
         return res.json({
           code: 200,
           success: true,
-          message: 'User Found',
+          message: 'Store Found',
           document,
         });
       })
@@ -47,53 +45,57 @@ export class UserController {
         return res.status(500).json({
           code: 500,
           success: false,
-          message: 'Internal Server Error While Searching User',
+          message: 'Internal Server Error While Searching Store',
+          error,
+        });
+      });
+  }
+
+  @Post()
+  postStore(@Body() store: Store | Store[], @Res() res: Response) {
+    this.storeService
+      .createOneOrMany(store)
+      .then(document => {
+        return res.json({
+          code: 200,
+          success: true,
+          message: 'Store Created',
+        });
+      })
+      .catch(error => {
+        return res.status(500).json({
+          code: 500,
+          success: false,
+          message: 'Internal Server Error While Creating Store',
           error,
         });
       });
   }
 
   @Put(':id')
-  putUser(@Param('id') id: string, @Res() res: Response, @Body() user: User) {
-    user.updated = Date.now();
-    this.userService
-      .updateCreateOne(id, user)
+  putStore(
+    @Param('id') id: string,
+    @Body() store: Store,
+    @Res() res: Response,
+  ) {
+    this.storeService
+      .updateCreateOne(id, store)
       .then(document => {
         return res.json({
           code: 200,
           success: true,
-          message: 'User Updated',
-          document,
+          message: 'Store Updated',
+          document
         });
       })
       .catch(error => {
         return res.status(500).json({
           code: 500,
           success: false,
-          message: 'Internal Server Error While Updating User',
+          message: 'Internal Server Error While Updating Store',
           error,
         });
       });
   }
-
-  @Delete(':id')
-  banUser(@Param('id') id: string, @Res() res: Response) {
-    this.userService
-      .deleteOne(id)
-      .then(document => {
-        return res.json({
-          code: 200,
-          success: true,
-          message: 'User Banned from Platform',
-        });
-      })
-      .catch(error => {
-        return res.status(500).json({
-          code: 500,
-          success: false,
-          message: 'Internal Server Error While Banning User',
-          error,
-        });
-      });
-  }
+  
 }

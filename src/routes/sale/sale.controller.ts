@@ -12,7 +12,7 @@ import {
 import { SaleService } from '../../services/sale.service';
 import { Response } from 'express';
 import { TokenGuard } from '../../guards/token.guard';
-import { Sale } from '../../../dist/interfaces/sale.interface';
+import { Sale } from '../../interfaces/sale.interface';
 
 @Controller('sale')
 export class SaleController {
