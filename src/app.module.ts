@@ -8,10 +8,9 @@ import { RoutesModule } from './routes/routes.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://miguelesvida:VjD1MNCIHNC7SYmj@cluster0-lpoyb.mongodb.net/pos?retryWrites=true&w=majority',
+      'mongodb+srv://miguelesvida:VjD1MNCIHNC7SYmj@cluster0-lpoyb.mongodb.net/abarras?retryWrites=true&w=majority',
       { useNewUrlParser: true }
     ),
-    ServicesModule,
     RoutesModule
   ],
   controllers: [AppController],

@@ -1,25 +1,30 @@
-import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  Inject,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { User } from 'src/interfaces/user.interface';
 
 @Injectable()
 export class LocalGuard implements CanActivate {
+  constructor(private userService: UserService) {}
 
-  constructor(@Inject() private userService:UserService) {}
-  
   async canActivate(context: ExecutionContext): Promise<boolean> {
-
     const request = context.switchToHttp().getRequest();
-    const user = {email: new RegExp( request.body.email)};
+    const user: unknown = {
+      email: new RegExp(request.body.email),
+      banned: false,
+    };
 
-    return await this.userService.findAuthPassword(user as unknown as User)
-    .then(document=>{
-      if(document.password == request.password)
-      return true;
-    })
-    .catch(error => {
-      return false;
-    })
-    
+    return await this.userService
+      .findAuthPassword(user as User)
+      .then(document => {
+        return document.password == request.body.password ? true : false;
+      })
+      .catch(error => {
+        return false;
+      });
   }
 }

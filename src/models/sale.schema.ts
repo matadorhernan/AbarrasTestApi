@@ -1,6 +1,11 @@
 import { Schema } from 'mongoose';
 
 export const SaleSchema = new Schema({
+  store:{
+    type: Schema.Types.ObjectId,
+    ref: 'Stores',
+    required: true
+  },
   products: [{
       type: Schema.Types.ObjectId,
       ref: 'Products',
