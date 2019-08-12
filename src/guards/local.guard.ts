@@ -12,6 +12,8 @@ export class LocalGuard implements CanActivate {
   constructor(private userService: UserService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+
+    
     const request = context.switchToHttp().getRequest();
     const user: unknown = {
       email: new RegExp(request.body.email),
